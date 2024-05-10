@@ -1,2 +1,1 @@
-# OTUSPROM
-OTUS Prometheus learning
+
