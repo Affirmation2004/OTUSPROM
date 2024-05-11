@@ -1,0 +1,30 @@
+global:
+  resolve_timeout: 5m
+  telegram_api_url: https://api.telegram.org
+  smtp_smarthost: '172.23.32.1:1025'
+  smtp_from: 'alertmanager@otus.org'
+  smtp_require_tls: false
+
+route:
+  receiver: default-reciever
+  routes:
+    - matchers:
+        - severity="warning"
+      receiver: telegram-test
+    - matchers:
+        - severity="critical"
+      receiver: email
+receivers:
+  - name: telegram-test
+    telegram_configs:
+      - bot_token: 7175330551:AAE9PBfXkkw1G-Axm8xfd606eqeLs5aU08c
+        chat_id: -1002088104183
+        api_url: https://api.telegram.org
+  - name: email
+    email_configs:
+      - to: 'test@local.com'
+        send_resolved: true
+           
+  - name: default-reciever
+
+

@@ -1,0 +1,14 @@
+Your user ID: 192195634
+Current chat ID: 192195634
+
+Бот OTUS_alerting
+
+username OTUS_alerting_bot
+
+Use this token to access the HTTP API:
+7175330551:AAE9PBfXkkw1G-Axm8xfd606eqeLs5aU08c
+
+Группа
+@otus_alerting_group
+OTUS_alerting_group
+id: -1002088104183
