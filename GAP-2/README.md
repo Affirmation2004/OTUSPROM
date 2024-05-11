@@ -1,4 +1,4 @@
-В Docker compose из предыдущей лабораторной работы был добавлен раздел доя последней векрсии Grafana:
+В Docker compose из предыдущей лабораторной работы был добавлен раздел для последней версии Grafana:
 
 grafana:
     image: grafana/grafana:latest
