@@ -1,0 +1,97 @@
+version: '3.3'
+
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./data/html:/var/www/html
+      - ./logs/nginx:/var/log/nginx
+    ports:
+      - "8080:80"
+    links:
+      - wordpress
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    volumes:
+      - ./data/html:/var/www/html
+    ports:
+      - "80:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST:  db:3306
+      WORDPRESS_DB_USER: testuser
+      WORDPRESS_DB_PASSWORD: testpassword
+      WORDPRESS_DB_NAME: wordpress
+
+  db:
+    image: mysql:5.7
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: testpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpassword
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    links:
+      - db:mysql
+    ports:
+      - "8081:80"
+    environment:
+      MYSQL_ROOT_PASSWORD: testpassword
+
+  prometheus: 
+    image: prom/prometheus:latest
+    volumes:
+      - './:/etc/prometheus/'
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+ 
+  node-exporter:
+    image: prom/node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)
+    ports:
+      - 9100:9100  
+
+  mysqld-exporter:
+    image: prom/mysqld-exporter:latest
+    volumes:
+      - ./sql_exporter.cnf:/.my.cnf
+    command:
+      - --config.my-cnf=.my.cnf
+    ports:
+      - "9104:9104"
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    volumes:
+      - ./blackbox.yml:/config/blackbox.yml
+    command:
+      - '--config.file=/config/blackbox.yml'
+    ports:
+      - "9115:9115"
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    command:
+      - --nginx.scrape-uri=http://172.23.32.1:80/nginx_status
+    ports:                                                                                                            
+      - "9113:9113"
+

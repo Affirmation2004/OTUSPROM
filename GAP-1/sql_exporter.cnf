@@ -1,0 +1,5 @@
+cat <<'EOF' >> ~/.my.cnf
+[client]
+user=testuser
+password=testpassword
+EOF
